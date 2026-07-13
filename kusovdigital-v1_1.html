@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kusov Digital — Web pre tvoj podnik. Najprv zadarmo.</title>
+<meta name="description" content="Spravíme ti web pre tvoj podnik zadarmo na ukážku. Pozrieš si ho, a platíš, len ak sa ti páči. Weby, online rezervácie a automatizácia pre podniky na Slovensku.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#17181C;
+    --ink-soft:#5B5D64;
+    --ink-faint:#8B8D93;
+    --paper:#FFFFFF;
+    --mist:#F3F4F1;
+    --mist-2:#ECEEE9;
+    --accent:#FF5630;
+    --accent-deep:#E03E1E;
+    --accent-wash:#FFF1EC;
+    --line:#E6E7E2;
+    --line-2:#EFF0EC;
+    --shadow:0 1px 2px rgba(23,24,28,.04),0 8px 28px rgba(23,24,28,.06);
+    --shadow-lg:0 4px 12px rgba(23,24,28,.06),0 24px 60px rgba(23,24,28,.10);
+    --disp:'Bricolage Grotesque', system-ui, sans-serif;
+    --sans:'Inter', system-ui, -apple-system, sans-serif;
+    --ease:cubic-bezier(.22,1,.36,1);
+    --r:14px;--r-lg:22px;--r-sm:9px;
+    --maxw:1180px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  body.menu-open{overflow:hidden}
+  a{color:inherit;text-decoration:none}
+  ::selection{background:var(--accent);color:#fff}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 clamp(20px,5vw,40px)}
+
+  h1,h2,h3,h4{font-family:var(--disp);font-weight:700;line-height:1.05;letter-spacing:-.02em}
+  .accent{color:var(--accent)}
+
+  /* reveal */
+  .rv{opacity:0;transform:translateY(22px);transition:opacity .8s var(--ease),transform .9s var(--ease);transition-delay:var(--d,0s)}
+  .rv.in{opacity:1;transform:none}
+
+  /* ---------- nav ---------- */
+  .nav{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(255,255,255,.82);backdrop-filter:blur(12px);border-bottom:1px solid transparent;transition:border-color .4s var(--ease),box-shadow .4s var(--ease)}
+  .nav.scrolled{border-color:var(--line);box-shadow:0 4px 24px rgba(23,24,28,.05)}
+  .nav__in{display:flex;align-items:center;justify-content:space-between;height:70px}
+  .logo{display:flex;align-items:baseline;gap:8px;font-family:var(--disp);font-weight:800;font-size:21px;letter-spacing:-.02em;z-index:52}
+  .logo b{color:var(--ink)}
+  .logo span{color:var(--accent);font-weight:600;font-size:15px;letter-spacing:.02em}
+  .nav__links{display:flex;align-items:center;gap:32px}
+  .nav__links a{font-size:15px;color:var(--ink-soft);font-weight:500;transition:color .3s var(--ease)}
+  .nav__links a:hover{color:var(--ink)}
+  .btn{display:inline-flex;align-items:center;gap:9px;font-family:var(--disp);font-weight:600;cursor:pointer;border:none;border-radius:var(--r-sm);transition:transform .25s var(--ease),background .3s var(--ease),box-shadow .3s var(--ease);font-size:15px;letter-spacing:-.01em}
+  .btn-primary{background:var(--accent);color:#fff;padding:12px 22px;box-shadow:0 6px 18px rgba(255,86,48,.28)}
+  .btn-primary:hover{background:var(--accent-deep);transform:translateY(-2px);box-shadow:0 10px 26px rgba(255,86,48,.34)}
+  .btn-primary:active{transform:translateY(0)}
+  .btn-lg{padding:16px 30px;font-size:17px;border-radius:var(--r)}
+  .btn-ghost{background:var(--mist);color:var(--ink);padding:12px 22px}
+  .btn-ghost:hover{background:var(--mist-2);transform:translateY(-2px)}
+  .nav__cta{display:inline-flex}
+  .burger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:8px;z-index:52}
+  .burger span{width:26px;height:2px;background:var(--ink);border-radius:2px;transition:.35s var(--ease)}
+  body.menu-open .burger span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+  body.menu-open .burger span:nth-child(2){opacity:0}
+  body.menu-open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+  .overlay{position:fixed;inset:0;z-index:48;background:var(--paper);display:flex;flex-direction:column;justify-content:center;gap:8px;padding:0 32px;clip-path:inset(0 0 100% 0);transition:clip-path .6s var(--ease)}
+  body.menu-open .overlay{clip-path:inset(0 0 0 0)}
+  .overlay a{font-family:var(--disp);font-weight:700;font-size:clamp(2rem,9vw,3.4rem);color:var(--ink)}
+  .overlay a:hover{color:var(--accent)}
+  .overlay .btn{margin-top:18px;width:fit-content}
+
+  /* ---------- hero ---------- */
+  .hero{padding:140px 0 70px;position:relative}
+  .hero__grid{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+  .badge{display:inline-flex;align-items:center;gap:8px;background:var(--accent-wash);color:var(--accent-deep);font-weight:600;font-size:13px;padding:8px 15px;border-radius:100px;letter-spacing:.01em}
+  .badge .dot{width:7px;height:7px;border-radius:50%;background:var(--accent)}
+  .hero h1{font-size:clamp(2.6rem,6vw,4.5rem);margin:22px 0 0;letter-spacing:-.03em}
+  .hero__sub{font-size:clamp(17px,1.7vw,20px);color:var(--ink-soft);margin-top:22px;max-width:30ch;line-height:1.6}
+  .hero__actions{display:flex;gap:14px;margin-top:34px;flex-wrap:wrap}
+  .hero__trust{display:flex;align-items:center;gap:14px;margin-top:30px;color:var(--ink-faint);font-size:14px}
+  .stars{color:var(--accent);letter-spacing:2px;font-size:15px}
+
+  /* mock browser */
+  .mock{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);overflow:hidden;transform:rotate(.6deg)}
+  .mock__bar{display:flex;align-items:center;gap:14px;padding:13px 16px;background:var(--mist);border-bottom:1px solid var(--line)}
+  .mock__dots{display:flex;gap:6px}
+  .mock__dots i{width:11px;height:11px;border-radius:50%;background:#D6D7D1;display:block}
+  .mock__url{flex:1;background:#fff;border-radius:7px;font-size:12px;color:var(--ink-faint);padding:6px 12px;text-align:center;border:1px solid var(--line)}
+  .msite{position:relative;background:#1b1714;color:#fff;min-height:300px;padding:22px 24px;display:flex;flex-direction:column;justify-content:space-between}
+  .msite__top{display:flex;justify-content:space-between;align-items:center}
+  .mite-logo{font-family:var(--disp);font-weight:700;font-size:16px;letter-spacing:.04em;color:#fff}
+  .mite-nav{display:flex;gap:12px}
+  .mite-nav i{width:18px;height:2px;background:rgba(255,255,255,.35);display:block;border-radius:2px}
+  .mite-hero h5{font-family:var(--disp);font-weight:700;font-size:1.7rem;line-height:1.05;margin-bottom:6px}
+  .mite-hero h5 em{font-style:normal;color:#FF7A4D}
+  .mite-hero p{font-size:12px;color:rgba(255,255,255,.6);margin-bottom:16px}
+  .mite-pills{display:flex;gap:8px;align-items:center}
+  .mite-pill{background:#FF5630;color:#fff;font-size:11px;font-weight:600;padding:8px 16px;border-radius:7px}
+  .mite-pill.ghost{background:rgba(255,255,255,.1);color:#fff}
+  .mite-cards{display:flex;gap:8px;margin-top:16px}
+  .mite-card{flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:10px}
+  .mite-card .t{font-size:11px;font-weight:600;margin-bottom:4px}
+  .mite-card .pr{font-size:11px;color:#FF7A4D;font-weight:600}
+  .mite-card .ln{height:5px;background:rgba(255,255,255,.1);border-radius:3px;margin-top:6px}
+  .mite-card .ln.s{width:60%}
+
+  /* float tag on mock */
+  .floaty{position:absolute;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:11px 15px;display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;white-space:nowrap;z-index:2}
+  .floaty .ic{width:30px;height:30px;border-radius:8px;background:var(--accent-wash);color:var(--accent-deep);display:flex;align-items:center;justify-content:center;font-size:15px;flex:0 0 auto}
+  .floaty.f1{right:-48px;top:-22px;transform:rotate(2deg)}
+  .floaty.f2{left:-48px;bottom:-22px;transform:rotate(-3deg)}
+  .hero__visual{position:relative;padding:36px 60px}
+
+  /* ---------- marquee ---------- */
+  .marquee{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--mist);padding:18px 0;margin-top:64px;overflow:hidden;white-space:nowrap;position:relative}
+  .marquee__track{display:inline-flex;gap:0;animation:scroll 28s linear infinite}
+  .marquee__track span{font-family:var(--disp);font-weight:600;font-size:18px;color:var(--ink-soft);padding:0 26px;display:inline-flex;align-items:center;gap:26px}
+  .marquee__track span::after{content:'•';color:var(--accent)}
+  @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+  /* ---------- sections ---------- */
+  .sec{padding:clamp(64px,9vw,110px) 0}
+  .sec.mist{background:var(--mist)}
+  .sec-head{max-width:620px;margin-bottom:54px}
+  .sec-head.center{margin-left:auto;margin-right:auto;text-align:center}
+  .kicker{font-family:var(--disp);font-weight:600;font-size:14px;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px}
+  .sec-head h2{font-size:clamp(2rem,4.4vw,3.1rem)}
+  .sec-head p{color:var(--ink-soft);font-size:18px;margin-top:16px;line-height:1.6}
+
+  /* steps */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+  .step{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:32px 28px;position:relative;transition:transform .35s var(--ease),box-shadow .35s var(--ease)}
+  .sec.mist .step{box-shadow:var(--shadow)}
+  .step:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg)}
+  .step__n{font-family:var(--disp);font-weight:800;font-size:15px;width:38px;height:38px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;margin-bottom:22px}
+  .step h3{font-size:1.4rem;margin-bottom:10px}
+  .step p{color:var(--ink-soft);font-size:15.5px}
+  .step__free{position:absolute;top:30px;right:28px;background:var(--accent-wash);color:var(--accent-deep);font-weight:700;font-size:12px;font-family:var(--disp);padding:6px 12px;border-radius:100px}
+
+  /* services */
+  .svc{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+  .svc__card{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:34px 30px;transition:transform .35s var(--ease),box-shadow .35s var(--ease),border-color .35s var(--ease)}
+  .svc__card:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg);border-color:transparent}
+  .svc__ic{width:54px;height:54px;border-radius:14px;background:var(--accent-wash);color:var(--accent-deep);display:flex;align-items:center;justify-content:center;font-size:26px;font-family:var(--disp);font-weight:700;margin-bottom:22px}
+  .svc__card h3{font-size:1.5rem;margin-bottom:12px}
+  .svc__card p{color:var(--ink-soft);font-size:16px}
+
+  /* references */
+  .refs{display:grid;grid-template-columns:repeat(2,1fr);gap:26px}
+  .ref{border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--line);background:#fff;transition:transform .35s var(--ease),box-shadow .35s var(--ease)}
+  .ref:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg)}
+  .ref__top{height:190px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;padding:26px}
+  .ref__foot{display:flex;justify-content:space-between;align-items:center;padding:20px 24px;border-top:1px solid var(--line)}
+  .ref__foot .nm{font-family:var(--disp);font-weight:700;font-size:1.2rem}
+  .ref__foot .ct{font-size:13px;color:var(--ink-faint)}
+  .ref__go{font-size:14px;font-weight:600;color:var(--accent);display:inline-flex;align-items:center;gap:6px;transition:gap .3s var(--ease)}
+  .ref:hover .ref__go{gap:11px}
+  /* ref themed previews */
+  .rp{width:100%;height:100%;border-radius:10px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:8px}
+  .rp .lab{font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;opacity:.7}
+  .rp .ttl{font-family:var(--disp);font-weight:700;font-size:1.5rem;line-height:1.05}
+  .rp .pill{font-size:11px;font-weight:600;padding:7px 14px;border-radius:100px;margin-top:4px}
+  .rp-kebab{background:#1b1714;color:#fff}.rp-kebab .ttl em{color:#FF7A4D;font-style:normal}.rp-kebab .pill{background:#FF5630;color:#fff}
+  .rp-yoga{background:#0f4f43;color:#eafff7}.rp-yoga .pill{background:#eafff7;color:#0f4f43}
+  .rp-gym{background:#171513;color:#f0e9dd}.rp-gym .ttl{color:#f0e9dd}.rp-gym .pill{border:1px solid #c9a86a;color:#c9a86a}
+  .rp-pen{background:#1d3a52;color:#eef4f8}.rp-pen .pill{background:#eef4f8;color:#1d3a52}
+
+  /* pricing */
+  .price{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;align-items:start}
+  .plan{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:34px 30px;position:relative;transition:transform .35s var(--ease),box-shadow .35s var(--ease)}
+  .plan:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg)}
+  .plan.feat{border:2px solid var(--accent);box-shadow:var(--shadow-lg)}
+  .plan__tag{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;font-family:var(--disp);font-weight:700;font-size:12px;padding:6px 16px;border-radius:100px;white-space:nowrap}
+  .plan__name{font-family:var(--disp);font-weight:700;font-size:1.35rem;margin-bottom:6px}
+  .plan__free{font-size:13px;color:var(--accent-deep);font-weight:600;margin-bottom:20px}
+  .plan__price{display:flex;align-items:baseline;gap:6px;margin-bottom:4px}
+  .plan__price .from{font-size:14px;color:var(--ink-faint)}
+  .plan__price .amt{font-family:var(--disp);font-weight:800;font-size:2.6rem;letter-spacing:-.03em}
+  .plan__mo{font-size:14px;color:var(--ink-soft);margin-bottom:24px}
+  .plan__mo b{color:var(--ink);font-weight:600}
+  .plan ul{list-style:none;margin-bottom:28px;display:flex;flex-direction:column;gap:12px}
+  .plan li{display:flex;gap:11px;font-size:15px;color:var(--ink-soft);align-items:flex-start}
+  .plan li .ck{color:var(--accent);font-weight:700;flex:0 0 auto;margin-top:1px}
+  .plan .btn{width:100%;justify-content:center}
+
+  /* faq */
+  .faq{max-width:760px;margin:0 auto}
+  details{border-bottom:1px solid var(--line);padding:6px 0}
+  summary{list-style:none;cursor:pointer;padding:20px 4px;font-family:var(--disp);font-weight:600;font-size:1.18rem;display:flex;justify-content:space-between;align-items:center;gap:20px;transition:color .3s var(--ease)}
+  summary::-webkit-details-marker{display:none}
+  summary:hover{color:var(--accent)}
+  summary .pm{flex:0 0 auto;width:28px;height:28px;border-radius:50%;background:var(--mist);color:var(--ink);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:600;transition:transform .35s var(--ease),background .3s var(--ease),color .3s var(--ease)}
+  details[open] summary .pm{transform:rotate(45deg);background:var(--accent);color:#fff}
+  details p{color:var(--ink-soft);font-size:16px;padding:0 4px 22px;max-width:62ch}
+
+  /* cta band + contact */
+  .cta{position:relative;overflow:hidden}
+  .cta__box{background:var(--ink);color:#fff;border-radius:28px;padding:clamp(40px,6vw,72px);position:relative;overflow:hidden}
+  .cta__box::after{content:'';position:absolute;width:480px;height:480px;border-radius:50%;background:radial-gradient(circle,rgba(255,86,48,.45),transparent 62%);right:-120px;top:-160px;pointer-events:none}
+  .cta__grid{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center;position:relative}
+  .cta__box h2{font-size:clamp(2.1rem,4.4vw,3.2rem);color:#fff;letter-spacing:-.03em}
+  .cta__box h2 .accent{color:#FF7A4D}
+  .cta__box p{color:rgba(255,255,255,.7);font-size:18px;margin-top:18px;max-width:34ch}
+  .form{display:flex;flex-direction:column;gap:16px}
+  .form__row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .form input,.form textarea{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:11px;color:#fff;font-family:var(--sans);font-size:15.5px;padding:14px 16px;transition:border-color .3s var(--ease),background .3s var(--ease)}
+  .form textarea{resize:vertical;min-height:96px}
+  .form input::placeholder,.form textarea::placeholder{color:rgba(255,255,255,.45)}
+  .form input:focus,.form textarea:focus{outline:none;border-color:var(--accent);background:rgba(255,255,255,.1)}
+  .form .btn{justify-content:center;margin-top:4px}
+  .form__note{font-size:13px;color:rgba(255,255,255,.55);text-align:center}
+  .form__note a{color:#FF7A4D;font-weight:600}
+
+  /* footer */
+  .footer{padding:64px 0 44px;border-top:1px solid var(--line)}
+  .footer__top{display:flex;justify-content:space-between;gap:40px;flex-wrap:wrap}
+  .footer__brand{max-width:300px}
+  .footer__brand p{color:var(--ink-soft);font-size:15px;margin-top:14px}
+  .footer__cols{display:flex;gap:clamp(30px,6vw,80px);flex-wrap:wrap}
+  .footer__col h5{font-family:var(--disp);font-weight:700;font-size:14px;margin-bottom:16px}
+  .footer__col a,.footer__col p{display:block;color:var(--ink-soft);font-size:15px;margin-bottom:10px;transition:color .3s var(--ease)}
+  .footer__col a:hover{color:var(--accent)}
+  .footer__bottom{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:50px;padding-top:26px;border-top:1px solid var(--line);color:var(--ink-faint);font-size:13.5px}
+
+  /* responsive */
+  @media(max-width:880px){
+    .nav__links{display:none}.burger{display:flex}
+    .hero__grid{grid-template-columns:1fr;gap:48px}
+    .hero{padding-top:120px}
+    .mock{transform:none;max-width:460px}
+    .hero__visual{padding:24px 40px}
+    .floaty{font-size:12px;padding:9px 12px}
+    .floaty.f1{right:-26px;top:-16px}
+    .floaty.f2{left:-26px;bottom:-16px}
+    .steps,.svc,.price{grid-template-columns:1fr}
+    .refs{grid-template-columns:1fr}
+    .cta__grid{grid-template-columns:1fr;gap:34px}
+    .plan.feat{transform:none}
+  }
+  @media(max-width:520px){
+    .form__row{grid-template-columns:1fr}
+    .hero__actions .btn{width:100%;justify-content:center}
+    .floaty{position:static;width:fit-content;margin:10px auto 0;transform:none!important}
+    .floaty.f1{margin-top:14px}
+    .hero__visual{display:flex;flex-direction:column;align-items:center;padding:0}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important;scroll-behavior:auto}
+    .rv{opacity:1;transform:none}
+    .mock{transform:none}
+  }
+</style>
+</head>
+<body id="top">
+
+<header class="nav" id="nav">
+  <div class="wrap nav__in">
+    <a href="#top" class="logo"><b>Kusov</b> <span>Digital</span></a>
+    <nav class="nav__links">
+      <a href="#ako">Ako to funguje</a>
+      <a href="#sluzby">Služby</a>
+      <a href="#prace">Naše práce</a>
+      <a href="#cennik">Cenník</a>
+      <a href="#kontakt" class="btn btn-primary nav__cta">Web zadarmo</a>
+    </nav>
+    <button class="burger" id="burger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<div class="overlay" id="overlay">
+  <a href="#ako">Ako to funguje</a>
+  <a href="#sluzby">Služby</a>
+  <a href="#prace">Naše práce</a>
+  <a href="#cennik">Cenník</a>
+  <a href="#kontakt" class="btn btn-primary btn-lg">Chcem web zadarmo</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero__grid">
+      <div>
+        <span class="badge rv"><span class="dot"></span> Web zadarmo na ukážku — bez záväzku</span>
+        <h1 class="rv" style="--d:.06s">Web pre tvoj podnik. <span class="accent">Najprv zadarmo.</span></h1>
+        <p class="hero__sub rv" style="--d:.12s">Spravíme ti reálny web pre tvoj podnik. Pozrieš si ho, a platíš, len ak sa ti páči. Žiadne riziko, žiadna platba vopred.</p>
+        <div class="hero__actions rv" style="--d:.18s">
+          <a href="#kontakt" class="btn btn-primary btn-lg">Chcem web zadarmo</a>
+          <a href="#prace" class="btn btn-ghost btn-lg">Pozri naše práce</a>
+        </div>
+        <div class="hero__trust rv" style="--d:.24s">
+          <span class="stars">★★★★★</span>
+          <span>Weby pre reštaurácie, štúdiá aj penzióny po celom Slovensku.</span>
+        </div>
+      </div>
+
+      <div class="rv hero__visual" style="--d:.2s" aria-hidden="true">
+        <div class="mock">
+          <div class="mock__bar">
+            <div class="mock__dots"><i></i><i></i><i></i></div>
+            <div class="mock__url">tvojpodnik.sk</div>
+          </div>
+          <div class="mite msite">
+            <div class="msite__top">
+              <span class="mite-logo">PIZZA NONNA</span>
+              <span class="mite-nav"><i></i><i></i><i></i></span>
+            </div>
+            <div class="mite-hero">
+              <h5>Najlepšia pizza<br>v <em>meste.</em></h5>
+              <p>Čerstvé cesto, drevená pec, rozvoz domov.</p>
+              <div class="mite-pills">
+                <span class="mite-pill">Objednať</span>
+                <span class="mite-pill ghost">Menu</span>
+              </div>
+            </div>
+            <div class="mite-cards">
+              <div class="mite-card"><div class="t">Margherita</div><div class="pr">6,90 €</div><div class="ln"></div><div class="ln s"></div></div>
+              <div class="mite-card"><div class="t">Diavola</div><div class="pr">8,50 €</div><div class="ln"></div><div class="ln s"></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="floaty f1"><span class="ic">✓</span> Hotové za pár dní</div>
+        <div class="floaty f2"><span class="ic">€</span> Platíš, až keď sa páči</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee__track">
+      <span>Reštaurácie<span></span></span><span>Pizzerie</span><span>Holičstvá</span><span>Kaviarne</span><span>Fitká</span><span>Penzióny</span><span>Joga štúdiá</span><span>Kvetinárstva</span><span>Kozmetika</span><span>Autoservisy</span>
+      <span>Reštaurácie</span><span>Pizzerie</span><span>Holičstvá</span><span>Kaviarne</span><span>Fitká</span><span>Penzióny</span><span>Joga štúdiá</span><span>Kvetinárstva</span><span>Kozmetika</span><span>Autoservisy</span>
+    </div>
+  </div>
+</section>
+
+<!-- AKO TO FUNGUJE -->
+<section class="sec" id="ako">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="kicker">Ako to funguje</div>
+      <h2>Tri kroky. Prvý je zadarmo.</h2>
+      <p>Nemusíš sa rozhodovať vopred. Najprv ti web ukážeme — a ty si vyberieš.</p>
+    </div>
+    <div class="steps">
+      <div class="step rv">
+        <div class="step__n">1</div>
+        <h3>Napíš nám</h3>
+        <p>Povieš nám pár viet o svojom podniku. Čo robíš, pre koho, a ako to má pôsobiť. Stačí jeden mail.</p>
+      </div>
+      <div class="step rv" style="--d:.1s">
+        <span class="step__free">zadarmo</span>
+        <div class="step__n">2</div>
+        <h3>Spravíme web</h3>
+        <p>Do pár dní ti pošleme hotový návrh reálneho webu pre tvoj podnik. Žiadna platba vopred, žiadny záväzok.</p>
+      </div>
+      <div class="step rv" style="--d:.2s">
+        <div class="step__n">3</div>
+        <h3>Páči sa? Spustíme</h3>
+        <p>Ak si spokojný, web spustíme a postaráme sa o všetko — doménu, hosting, rezervácie aj podporu.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLUZBY -->
+<section class="sec mist" id="sluzby">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="kicker">Čo robíme</div>
+      <h2>Všetko, čo tvoj podnik potrebuje online.</h2>
+      <p>Od webu cez rezervácie až po automatizáciu — pod jednou strechou.</p>
+    </div>
+    <div class="svc">
+      <div class="svc__card rv">
+        <div class="svc__ic">✶</div>
+        <h3>Web, ktorý predáva</h3>
+        <p>Moderný, rýchly web na mieru tvojmu podniku. Vyzerá skvele na mobile aj počítači a zákazník hneď vie, čo má spraviť.</p>
+      </div>
+      <div class="svc__card rv" style="--d:.1s">
+        <div class="svc__ic">◷</div>
+        <h3>Online rezervácie</h3>
+        <p>Zákazníci si rezervujú termín alebo stôl sami, priamo z webu. Menej telefonátov, viac naplnených termínov.</p>
+      </div>
+      <div class="svc__card rv" style="--d:.2s">
+        <div class="svc__ic">⚡</div>
+        <h3>Automatizácia</h3>
+        <p>Potvrdenia, pripomienky a žiadosti o recenziu odídu samé. Ty sa staráš o biznis, zvyšok beží na pozadí.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRACE -->
+<section class="sec" id="prace">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="kicker">Naše práce</div>
+      <h2>Weby, ktoré už bežia.</h2>
+      <p>Pár podnikov, pre ktoré sme web postavili. Tvoj môže byť ďalší.</p>
+    </div>
+    <div class="refs">
+      <article class="ref rv">
+        <div class="ref__top"><div class="rp rp-kebab"><span class="lab">Reštaurácia</span><span class="ttl">Mozaika <em>Kebab</em></span><span class="pill">Wolt rozvoz · Menu</span></div></div>
+        <div class="ref__foot"><div><div class="nm">Mozaika Kebab</div><div class="ct">Reštaurácia · Piešťany</div></div><a href="https://petheck.github.io/mozaika-kebab-piestany/" class="ref__go" target="_blank">Pozrieť →</a></div>
+      </article>
+      <article class="ref rv" style="--d:.08s">
+        <div class="ref__top"><div class="rp rp-yoga"><span class="lab">Wellness</span><span class="ttl">Štúdio Mandala</span><span class="pill">Online rezervácie</span></div></div>
+        <div class="ref__foot"><div><div class="nm">Štúdio Mandala</div><div class="ct">Joga štúdio</div></div><a href="https://petheck.github.io/studio-mandala/" class="ref__go" target="_blank">Pozrieť →</a></div>
+      </article>
+      <article class="ref rv" style="--d:.16s">
+        <div class="ref__top"><div class="rp rp-gym"><span class="lab">Fashion</span><span class="ttl">FadeFactory</span><span class="pill">E-shop · Kolekcie</span></div></div>
+        <div class="ref__foot"><div><div class="nm">FadeFactory</div><div class="ct">Fashion brand · Online shop</div></div><a href="https://petheck.github.io/fadefactory-web/" class="ref__go" target="_blank">Pozrieť →</a></div>
+      </article>
+      <article class="ref rv" style="--d:.24s">
+        <div class="ref__top"><div class="rp rp-pen"><span class="lab">Ubytovanie</span><span class="ttl">Penzión Benátky</span><span class="pill">Rezervačný sprievodca</span></div></div>
+        <div class="ref__foot"><div><div class="nm">Penzión Benátky</div><div class="ct">Penzión · Piešťany</div></div><a href="https://petheck.github.io/penzion-benatky/" class="ref__go" target="_blank">Pozrieť →</a></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- CENNIK -->
+<section class="sec mist" id="cennik">
+  <div class="wrap">
+    <div class="sec-head center rv">
+      <div class="kicker">Cenník</div>
+      <h2>Jasné ceny. Prvý návrh vždy zadarmo.</h2>
+      <p>Vyber si balík, ktorý sedí tvojmu podniku. Bez skrytých poplatkov.</p>
+    </div>
+    <div class="price">
+      <div class="plan rv">
+        <div class="plan__name">Štart</div>
+        <div class="plan__free">Prvý návrh zadarmo</div>
+        <div class="plan__price"><span class="from">od</span><span class="amt">199 €</span></div>
+        <div class="plan__mo">jednorazovo + <b>19 €/mes</b></div>
+        <ul>
+          <li><span class="ck">✓</span> Jednostránkový web na mieru</li>
+          <li><span class="ck">✓</span> Skvelý vzhľad na mobile</li>
+          <li><span class="ck">✓</span> Kontakt, mapa, otváračka</li>
+          <li><span class="ck">✓</span> Základné SEO + Google</li>
+          <li><span class="ck">✓</span> Doména a hosting v cene</li>
+        </ul>
+        <a href="#kontakt" class="btn btn-ghost">Chcem ukážku</a>
+      </div>
+
+      <div class="plan feat rv" style="--d:.1s">
+        <span class="plan__tag">Najobľúbenejšie</span>
+        <div class="plan__name">Profi</div>
+        <div class="plan__free">Prvý návrh zadarmo</div>
+        <div class="plan__price"><span class="from">od</span><span class="amt">349 €</span></div>
+        <div class="plan__mo">jednorazovo + <b>29 €/mes</b></div>
+        <ul>
+          <li><span class="ck">✓</span> Viacstránkový web na mieru</li>
+          <li><span class="ck">✓</span> Online rezervácie / objednávky</li>
+          <li><span class="ck">✓</span> Galéria, menu, recenzie</li>
+          <li><span class="ck">✓</span> Napojenie na Google a sociálne siete</li>
+          <li><span class="ck">✓</span> Doména, hosting a úpravy v cene</li>
+        </ul>
+        <a href="#kontakt" class="btn btn-primary">Chcem ukážku</a>
+      </div>
+
+      <div class="plan rv" style="--d:.2s">
+        <div class="plan__name">Premium</div>
+        <div class="plan__free">Prvý návrh zadarmo</div>
+        <div class="plan__price"><span class="from">od</span><span class="amt">590 €</span></div>
+        <div class="plan__mo">jednorazovo + <b>49 €/mes</b></div>
+        <ul>
+          <li><span class="ck">✓</span> Všetko z balíka Profi</li>
+          <li><span class="ck">✓</span> Automatizácie (potvrdenia, pripomienky)</li>
+          <li><span class="ck">✓</span> Automatický zber recenzií</li>
+          <li><span class="ck">✓</span> Viacjazyčný web</li>
+          <li><span class="ck">✓</span> Prioritná podpora</li>
+        </ul>
+        <a href="#kontakt" class="btn btn-ghost">Chcem ukážku</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="sec" id="faq">
+  <div class="wrap">
+    <div class="sec-head center rv">
+      <div class="kicker">Časté otázky</div>
+      <h2>Na rovinu.</h2>
+    </div>
+    <div class="faq">
+      <details class="rv" open>
+        <summary>Naozaj je to zadarmo? <span class="pm">+</span></summary>
+        <p>Áno. Prvý návrh webu spravíme zadarmo a bez záväzku. Platíš až vtedy, keď sa rozhodneš web reálne spustiť. Najprv vidíš, potom sa rozhoduješ.</p>
+      </details>
+      <details class="rv">
+        <summary>Čo ak sa mi nebude páčiť? <span class="pm">+</span></summary>
+        <p>Nič neplatíš a nič sa nedeje. Ukážku si v pokoji pozrieš a rozhodnutie je úplne na tebe. Nemáš čo stratiť.</p>
+      </details>
+      <details class="rv">
+        <summary>Ako dlho to celé trvá? <span class="pm">+</span></summary>
+        <p>Prvý návrh zvyčajne pošleme do pár dní. Spustenie hotového webu podľa rozsahu, väčšinou do jedného týždňa.</p>
+      </details>
+      <details class="rv">
+        <summary>Musím rozumieť technike? <span class="pm">+</span></summary>
+        <p>Vôbec nie. Postaráme sa o všetko — doménu, hosting aj rezervačný systém. Ty len povieš, čo robíš, a na konci schváliš.</p>
+      </details>
+      <details class="rv">
+        <summary>Čo je v mesačnom poplatku? <span class="pm">+</span></summary>
+        <p>Hosting, doména, údržba, drobné úpravy a podpora. Web stále beží, je rýchly, bezpečný a aktuálny — bez toho, aby si sa o čokoľvek staral.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- CTA + KONTAKT -->
+<section class="sec cta" id="kontakt">
+  <div class="wrap">
+    <div class="cta__box rv">
+      <div class="cta__grid">
+        <div>
+          <h2>Tvoj nový web je na <span class="accent">jeden mail</span> ďaleko.</h2>
+          <p>Spravíme ti ho zadarmo na ukážku. Napíš nám pár viet o svojom podniku a ozveme sa ti.</p>
+        </div>
+        <form class="form" id="form">
+          <div class="form__row">
+            <input type="text" name="meno" placeholder="Tvoje meno" required>
+            <input type="text" name="podnik" placeholder="Názov podniku" required>
+          </div>
+          <div class="form__row">
+            <input type="email" name="email" placeholder="E-mail" required>
+            <input type="tel" name="tel" placeholder="Telefón (nepovinné)">
+          </div>
+          <textarea name="sprava" placeholder="Pár viet o tvojom podniku..."></textarea>
+          <button type="submit" class="btn btn-primary btn-lg">Chcem web zadarmo</button>
+          <p class="form__note">Alebo nám napíš priamo na <a href="mailto:peter@kusovdigital.com">peter@kusovdigital.com</a></p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <a href="#top" class="logo"><b>Kusov</b> <span>Digital</span></a>
+        <p>Weby, online rezervácie a automatizácia pre podniky na Slovensku.</p>
+      </div>
+      <div class="footer__cols">
+        <div class="footer__col">
+          <h5>Stránka</h5>
+          <a href="#ako">Ako to funguje</a>
+          <a href="#sluzby">Služby</a>
+          <a href="#prace">Naše práce</a>
+          <a href="#cennik">Cenník</a>
+        </div>
+        <div class="footer__col">
+          <h5>Kontakt</h5>
+          <a href="mailto:peter@kusovdigital.com">peter@kusovdigital.com</a>
+          <p>Piešťany, Slovensko</p>
+        </div>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>© 2026 Kusov Digital</span>
+      <span>Web zadarmo na ukážku — platíš, len ak sa ti páči.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  (function(){
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var rv = document.querySelectorAll('.rv');
+    if('IntersectionObserver' in window && !reduce){
+      var io = new IntersectionObserver(function(es){
+        es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+      },{threshold:.12, rootMargin:'0px 0px -8% 0px'});
+      rv.forEach(function(el){ io.observe(el); });
+    } else { rv.forEach(function(el){ el.classList.add('in'); }); }
+
+    var nav = document.getElementById('nav');
+    window.addEventListener('scroll', function(){
+      if(window.scrollY > 20) nav.classList.add('scrolled'); else nav.classList.remove('scrolled');
+    }, {passive:true});
+
+    var burger = document.getElementById('burger');
+    var overlay = document.getElementById('overlay');
+    burger.addEventListener('click', function(){
+      var o = document.body.classList.toggle('menu-open');
+      burger.setAttribute('aria-expanded', o ? 'true':'false');
+    });
+    overlay.querySelectorAll('a').forEach(function(a){
+      a.addEventListener('click', function(){ document.body.classList.remove('menu-open'); burger.setAttribute('aria-expanded','false'); });
+    });
+
+    var form = document.getElementById('form');
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var d = new FormData(form);
+      var subject = 'Mám záujem o web zadarmo — ' + (d.get('podnik')||'podnik');
+      var body = 'Meno: '+(d.get('meno')||'')+'\n'
+        + 'Podnik: '+(d.get('podnik')||'')+'\n'
+        + 'E-mail: '+(d.get('email')||'')+'\n'
+        + 'Telefón: '+(d.get('tel')||'')+'\n\n'
+        + 'Správa:\n'+(d.get('sprava')||'');
+      window.location.href = 'mailto:peter@kusovdigital.com?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+    });
+  })();
+</script>
+</body>
+</html>
